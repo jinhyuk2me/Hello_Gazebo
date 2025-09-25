@@ -1,0 +1,35 @@
+name: Ubuntu CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'ign-gazebo[0-9]'
+      - 'gz-sim[0-9]?'
+      - 'main'
+# and start a new one. The other runner will be available more quickly to your PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  jammy-ci:
+    runs-on: ubuntu-latest
+    name: Ubuntu Jammy CI
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v3
+      - uses: pre-commit/action@v3.0.0
+        with:
+          extra_args: --all-files
+      - name: Compile and test
+        id: ci
+        uses: gazebo-tooling/action-gz-ci@jammy
+        with:
+          # per bug https://github.com/gazebosim/gz-sim/issues/1409
+          cmake-args: '-DCMAKE_INSTALL_PREFIX=/usr -DBUILD_DOCS=OFF -DCMAKE_BUILD_TYPE=RelWithDebInfo'
+          codecov-enabled: true
+          cppcheck-enabled: true
+          cpplint-enabled: true
+          apt-dependencies: libdwarf-dev libdw-dev binutils-dev
