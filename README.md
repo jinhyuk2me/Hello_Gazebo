@@ -38,7 +38,9 @@ ros2 launch hello_gazebo_slam rviz_slam.launch.xml
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
-## 자율주행
+## Nav2를 활용한 자율주행
+
+![](https://github.com/jinhyuk2me/Gazebo_with_SLAM_and_Nav2/blob/main/assets/nav2.gif?raw=true)
 
 ```bash
 # 위치추정 시작 (맵 파일 지정 필수)
