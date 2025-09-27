@@ -41,8 +41,11 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ## 자율주행
 
 ```bash
-# 내비게이션 시작  
-ros2 launch hello_gazebo_navigation localization.launch.xml
+# 위치추정 시작 (맵 파일 지정 필수)
+ros2 launch hello_gazebo_navigation localization.launch.xml \
+    map:=$(find-pkg-share hello_gazebo_navigation)/map/my_factory_map.yaml
+
+# 내비게이션 시작
 ros2 launch hello_gazebo_navigation navigation.launch.xml
 ros2 launch hello_gazebo_navigation rviz_navigation.launch.xml
 
