@@ -1,6 +1,8 @@
-# Hello Gazebo
+![banner](https://github.com/jinhyuk2me/Gazebo_with_SLAM_and_Nav2/blob/main/assets/banner.png?raw=true)
 
-ROS 2 + Gazebo로 SLAM과 자율주행 실습한 개인 프로젝트
+# Gazebo_with_SLAM_and_Nav2
+
+Gazebo 시뮬레이션 내에서의 SLAM & Nav2 실습
 
 ## 구조
 
@@ -24,6 +26,8 @@ ros2 launch hello_gazebo_bringup launch_sim.launch.xml
 ```
 
 ## SLAM 실습
+
+![slam](https://github.com/jinhyuk2me/Gazebo_with_SLAM_and_Nav2/blob/main/assets/slam.gif?raw=true)
 
 ```bash
 # SLAM 시작
