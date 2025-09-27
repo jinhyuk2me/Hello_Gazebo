@@ -1,0 +1,58 @@
+<?xml version='1.0'?>
+<launch>
+    <!-- 기본 인수들 -->
+    <arg name="namespace" default=""/>
+    <arg name="map" default=""/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="params_file" default="$(find-pkg-share hello_gazebo_navigation)/params/nav2_params.yaml"/>
+    <arg name="autostart" default="true"/>
+    <arg name="use_composition" default="false"/>
+    <arg name="use_respawn" default="false"/>
+    <arg name="log_level" default="info"/>
+    <arg name="filter_yaml_path" default="$(find-pkg-share hello_gazebo_slam)/params/laser_filter.yaml"/>
+
+    <!-- 라이프사이클 노드들 -->
+    <arg name="lifecycle_nodes" default="['map_server', 'amcl']"/>
+
+    <group unless="$(var use_composition)">
+        <push-ros-namespace namespace="$(var namespace)"/>
+        
+        <!-- 레이저 스캔 필터 노드 (로봇 프레임 제거) -->
+        <node pkg="laser_filters" exec="scan_to_scan_filter_chain" name="laser_filter">
+            <param from="$(var filter_yaml_path)"/>
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+        </node>
+        
+        <!-- 맵 서버 -->
+        <node pkg="nav2_map_server" exec="map_server" name="map_server" output="screen">
+            <param from="$(var params_file)"/>
+            <param name="yaml_filename" value="$(var map)"/>
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- AMCL 위치추정 -->
+        <node pkg="nav2_amcl" exec="amcl" name="amcl" output="screen">
+            <param from="$(var params_file)"/>
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- 라이프사이클 매니저 -->
+        <node pkg="nav2_lifecycle_manager" exec="lifecycle_manager" name="lifecycle_manager_localization" output="screen">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="autostart" value="$(var autostart)"/>
+            <param name="node_names" value="$(var lifecycle_nodes)"/>
+        </node>
+    </group>
+</launch>

@@ -1,0 +1,110 @@
+<?xml version='1.0'?>
+<launch>
+    <!-- 기본 인수들 -->
+    <arg name="namespace" default=""/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="autostart" default="true"/>
+    <arg name="params_file" default="$(find-pkg-share hello_gazebo_navigation)/params/nav2_params.yaml"/>
+    <arg name="use_composition" default="false"/>
+    <arg name="use_respawn" default="false"/>
+    <arg name="log_level" default="info"/>
+
+    <!-- 라이프사이클 노드들 -->
+    <arg name="lifecycle_nodes" default="['controller_server',
+                       'smoother_server',
+                       'planner_server',
+                       'behavior_server',
+                       'bt_navigator',
+                       'waypoint_follower',
+                       'velocity_smoother']"/>
+
+    <group unless="$(var use_composition)">
+        <push-ros-namespace namespace="$(var namespace)"/>
+        
+        <!-- 컨트롤러 서버 -->
+        <node pkg="nav2_controller" exec="controller_server" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- 스무더 서버 -->
+        <node pkg="nav2_smoother" exec="smoother_server" name="smoother_server" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- 플래너 서버 -->
+        <node pkg="nav2_planner" exec="planner_server" name="planner_server" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- 비헤이비어 서버 -->
+        <node pkg="nav2_behaviors" exec="behavior_server" name="behavior_server" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- BT 네비게이터 -->
+        <node pkg="nav2_bt_navigator" exec="bt_navigator" name="bt_navigator" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- 웨이포인트 팔로워 -->
+        <node pkg="nav2_waypoint_follower" exec="waypoint_follower" name="waypoint_follower" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+        </node>
+
+        <!-- 속도 스무더 -->
+        <node pkg="nav2_velocity_smoother" exec="velocity_smoother" name="velocity_smoother" output="screen">
+            <param name="respawn" value="$(var use_respawn)"/>
+            <param name="respawn_delay" value="2.0"/>
+            <param name="log_level" value="$(var log_level)"/>
+            <param from="$(var params_file)"/>
+
+            <remap from="/tf" to="tf"/>
+            <remap from="/tf_static" to="tf_static"/>
+            <remap from="cmd_vel" to="cmd_vel_nav"/>
+            <remap from="cmd_vel_smoothed" to="cmd_vel"/>
+        </node>
+
+        <!-- 라이프사이클 매니저 -->
+        <node pkg="nav2_lifecycle_manager" exec="lifecycle_manager" name="lifecycle_manager_navigation" output="screen">
+            <param name="use_sim_time" value="$(var use_sim_time)"/>
+            <param name="autostart" value="$(var autostart)"/>
+            <param name="node_names" value="$(var lifecycle_nodes)"/>
+        </node>
+    </group>
+</launch>

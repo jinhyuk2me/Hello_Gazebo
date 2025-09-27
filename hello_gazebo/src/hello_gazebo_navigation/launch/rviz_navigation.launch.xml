@@ -1,0 +1,11 @@
+<?xml version='1.0' ?>
+
+<launch>
+    <!-- Navigation용 RViz 설정 파일 -->
+    <arg name="rviz_config_file" default="$(find-pkg-share hello_gazebo_navigation)/rviz/navigation.rviz"/>
+
+    <node pkg="rviz2" exec="rviz2" name="rviz2" output="screen"
+        args="-d $(var rviz_config_file)">
+        <param name="use_sim_time" value="true"/>
+    </node>
+</launch>

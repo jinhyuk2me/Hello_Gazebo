@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<launch>
+    <!-- SLAM 관련 인수들 -->
+    <arg name="use_sim_time" default="true"/>
+    <arg name="slam_params_file" default="$(find-pkg-share hello_gazebo_slam)/params/slam_params.yaml"/>
+    <arg name="filter_yaml_path" default="$(find-pkg-share hello_gazebo_slam)/params/laser_filter.yaml"/>
+
+    <!-- 레이저 스캔 필터 노드 (로봇 프레임 제거) -->
+    <node pkg="laser_filters" exec="scan_to_scan_filter_chain" name="laser_filter">
+        <param from="$(var filter_yaml_path)"/>
+        <param name="use_sim_time" value="$(var use_sim_time)"/>
+    </node>
+
+    <!-- SLAM Toolbox - Online Sync Launch (더 안정적) -->
+    <include file="$(find-pkg-share slam_toolbox)/launch/online_sync_launch.py">
+        <arg name="slam_params_file" value="$(var slam_params_file)"/>
+        <arg name="use_sim_time" value="$(var use_sim_time)"/>
+    </include>
+
+</launch>
+

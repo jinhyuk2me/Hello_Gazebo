@@ -1,0 +1,20 @@
+/**:
+  ros__parameters:
+    filter1:
+      name: range_filter
+      type: laser_filters/LaserScanRangeFilter
+      params:
+        use_message_range_limits: false
+        lower_threshold: 0.6    # 60cm 이내 포인트 제거 (로봇 길이 + 여유)
+        upper_threshold: 30.0   # 30m 이상 포인트 제거
+
+    filter2:
+      name: polygon_filter
+      type: laser_filters/LaserScanPolygonFilter
+      params:
+        polygon_frame: base_link
+        # 로봇 몸체 영역을 정의하는 폴리곤 (base_link 기준)
+        # 실제 로봇: 길이 60cm, 폭 40cm → 여유 포함하여 70cm x 50cm
+        polygon: '[[0.35, -0.25], [0.35, 0.25], [-0.35, 0.25], [-0.35, -0.25]]'
+        invert: false  # false: 폴리곤 내부 포인트 제거
+
