@@ -2,7 +2,7 @@
 
 # Gazebo_with_SLAM_and_Nav2
 
-Gazebo 시뮬레이션 내에서의 SLAM & Nav2 실습
+Gazebo 시뮬레이션 내에서의 SLAM & Nav2
 
 ## 구조
 
@@ -25,7 +25,7 @@ source install/setup.bash
 ros2 launch hello_gazebo_bringup launch_sim.launch.xml
 ```
 
-## SLAM 실습
+## SLAM
 
 ![slam](https://github.com/jinhyuk2me/Gazebo_with_SLAM_and_Nav2/blob/main/assets/slam.gif?raw=true)
 
@@ -38,7 +38,7 @@ ros2 launch hello_gazebo_slam rviz_slam.launch.xml
 ros2 run teleop_twist_keyboard teleop_twist_keyboard
 ```
 
-## 자율주행 실습
+## 자율주행
 
 ```bash
 # 내비게이션 시작  
